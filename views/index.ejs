@@ -1,0 +1,57 @@
+<!-- Display the list of books -->
+<h1>Book Inventory</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Genre</th>
+        <th>Year</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% books.forEach(book => { %>
+        <tr>
+            <td><%= book.title %></td>
+            <td><%= book.author %></td>
+            <td><%= book.genre %></td>
+            <td><%= book.year %></td>
+            <td>
+                <a href="/books/<%= book._id %>/edit">Edit</a>
+                <form action="/books/<%= book._id %>?_method=DELETE" method="POST">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+    <% }); %>
+    </tbody>
+</table>
+
+<!-- Pagination links -->
+<% if (pagination.previous) { %>
+    <a href="/books?page=<%= pagination.previous.page %>&limit=<%= pagination.previous.limit %>">Previous</a>
+<% } %>
+<% if (pagination.next) { %>
+    <a href="/books?page=<%= pagination.next.page %>&limit=<%= pagination.next.limit %>">Next</a>
+<% } %>
+
+<!-- Form for filtering, sorting, and searching -->
+<form action="/books" method="GET">
+    <input type="text" name="search" placeholder="Search by title">
+    <select name="sort">
+        <option value="title:asc">Title (A-Z)</option>
+        <option value="title:desc">Title (Z-A)</option>
+        <option value="author:asc">Author (A-Z)</option>
+        <option value="author:desc">Author (Z-A)</option>
+        <!-- Add more sorting options if needed -->
+    </select>
+    <select name="genre">
+        <option value="">All Genres</option>
+        <!-- Populate genre options dynamically -->
+        <% genres.forEach(genre => { %>
+            <option value="<%= genre %>"><%= genre %></option>
+        <% }); %>
+    </select>
+    <button type="submit">Apply Filters</button>
+</form>

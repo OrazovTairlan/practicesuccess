@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Inventory</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pagination a {
+            color: black;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: background-color .3s;
+        }
+
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }
+
+        .form-container {
+            margin-top: 20px;
+        }
+
+        .form-container input[type="text"] {
+            margin-bottom: 10px;
+        }
+
+        .form-container button {
+            padding: 8px 16px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+<h2>Book Inventory</h2>
+<table>
+    <thead>
+    <tr>
+        <th>id</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Genre</th>
+        <th>Year</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% books.forEach(function(book) { %>
+        <tr>
+            <td><%= book._id %></td>
+            <td><%= book.title %></td>
+            <td><%= book.author %></td>
+            <td><%= book.genre %></td>
+            <td><%= book.year %></td>
+        </tr>
+    <% }); %>
+    </tbody>
+</table>
+
+<div class="pagination">
+    <% if (pagination.previous) { %>
+        <a href='/books?page=<%= pagination.previous.page %>&limit=<%= pagination.previous.limit %>'>&laquo;
+            Previous</a>
+    <% } %>
+
+    <% if (pagination.next) { %>
+        <a href="/books?page=<%= pagination.next.page %>&limit=<%= pagination.next.limit %>">Next &raquo;</a>
+    <% } %>
+</div>
+
+<div class="form-container">
+    <h3>Search for Book by ID</h3>
+    <form id="searchForm">
+        <input type="text" id="bookId" name="bookId" placeholder="Enter Book ID">
+        <button type="button" onclick="searchBook()">Search</button>
+    </form>
+</div>
+
+<div class="form-container">
+    <h3>Delete Book</h3>
+    <form id="deleteForm">
+        <input type="text" id="deleteBookId" name="deleteBookId" placeholder="Enter Book ID">
+        <button type="button" onclick="deleteBook()">Delete</button>
+    </form>
+</div>
+
+<div class="form-container">
+    <h3>Update Book Information</h3>
+    <form id="updateForm">
+        <input type="text" id="updateBookId" name="updateBookId" placeholder="Enter Book ID">
+        <input type="text" id="year" name="year" placeholder="Enter year">
+        <input type="text" id="title" name="title" placeholder="Enter title">
+        <input type="text" id="genre" name="genre" placeholder="Enter genre">
+        <input type="text" id="author" name="author" placeholder="Enter author">
+        v
+        <!-- Add input fields for other book details to be updated -->
+        <button type="button" onclick="updateBook()">Update</button>
+    </form>
+</div>
+
+<script>
+    function searchBook() {
+        const bookId = document.getElementById("bookId").value;
+        fetch("/book/" + bookId).then((item) => {
+            return item.json()
+        }).then((item) => {
+            const bookTableBody = document.getElementById("bookTableBody");
+            bookTableBody.innerHTML = `
+                     <tr>
+<td>${item._id}</td>
+                      <td>${item.title}</td>
+                       <td>${item.author}</td>
+                        <td>${item.genre}</td>
+                        <td>${item.year}</td>
+                   </tr>
+                `;
+        })
+    }
+
+    function deleteBook() {
+        const bookId = document.getElementById("deleteBookId").value;
+        fetch("/book/" + bookId, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            method: "delete"
+        }).then((item) => {
+            return item.json()
+        }).then((item) => {
+            window.location.reload()
+        })
+
+    }
+
+    function updateBook() {
+        const bookId = document.getElementById("updateBookId").value;
+        console.log(document.getElementById("title").value)
+        fetch("/book/" + bookId, {
+            method: "Put",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                title: document.getElementById("title").value,
+                author: document.getElementById("author").value,
+                genre: document.getElementById("genre").value,
+                year: document.getElementById("year").value
+            })
+        }).then((item) => {
+            return item.json()
+        }).then((item) => {
+            const bookTableBody = document.getElementById("bookTableBody");
+            window.location.reload()
+        })
+    }
+</script>
+</body>
+</html>

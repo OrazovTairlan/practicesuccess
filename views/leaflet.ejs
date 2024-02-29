@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaflet Map with OpenWeather API</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        #map {
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/history">1 game<span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/country">2 game</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin">Admin panel</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/charts">Admin panel</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/pdf">Admin panel</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<input type="text">
+
+
+
+<button class="search">search</button>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    // Initialize the map
+    var mymap = L.map('map').setView([0, 0], 2); // Centered at (0, 0), zoom level 2
+    console.log("click")
+    // Add the Tile Layer (you can choose different tile layers)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(mymap);
+
+    // Add a click event listener to the map
+
+
+    // Add a click event listener to the map
+    let val = ""
+    document.querySelector("input").addEventListener("change", (event) => {
+        val = event.target.value
+    })
+
+    document.querySelector(".search").addEventListener("click", (e) => {
+
+        console.log("click")
+
+        e.preventDefault()
+        fetch("http://localhost:3000/weatherCity?city=" + val, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                // Add any other headers as needed
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                var popupContent = `
+        <div style = 'height: 290px; overflow-y: auto'>
+            <h2>Clicked Location</h2>
+            <p>Weather: ${data.data.list[0].weather[0].description}</p>
+            <p>Image: </p>
+<img src = 'http://openweathermap.org/img/w/${data.data.list[0].weather[0].icon}.png'/>
+<p>Temperature: <span>${data.data.list[0].main.temp}</span></p>
+<p>Temperature min: <span>${data.data.list[0].main.temp_min}</span></p>
+
+<p>Temperature max: <span>${data.data.list[0].main.temp_max}</span></p>
+<p>Temperature feels like: <span>${data.data.list[0].main.feels_like}</span></p>
+<p>Rain: ${data.data.list[0].rain == undefined ? 'Not available data' : data.data.list[0].rain['3h']}</p>
+<p>Country: ${data.data.city.country}</p>
+<p>Pressure: ${data.data.list[0].main.pressure}</p>
+<p>Wind: ${data.data.list[0].wind.speed}</p>
+<p>Humidity: ${data.data.list[0].main.humidity}</p>
+<p>Latitude, Longtitude: ${data.data.city.coord.lat}, ${data.data.city.coord.lon}</p>
+        </div>
+    `;
+                L.popup()
+                    .setLatLng({
+                        lat: data.data.city.coord.lat,
+                        lng: data.data.city.coord.lon
+                    })
+                    .setContent(popupContent)
+                    .openOn(mymap);
+                console.log("click")
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    })
+
+</script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Admin Panel</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/animals">Animals game</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/thesaurus">Thesaurus game</a>
+                </li>
+                <li class="nav-item charts">
+                    <a class="nav-link">Charts</a>
+                </li>
+                <li class="nav-item admin">
+                    <a class="nav-link" href="/admin">Admin</a>
+                </li>
+                <li class="nav-item download">
+                    <a class="nav-link">PDF Download</a>
+                </li>
+                <li class="nav-item history">
+                    <a class="nav-link">History</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/translate">Translate</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h1 class="mb-4">User Management</h1>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">User ID</th>
+                <th scope="col">Username</th>
+                <th scope="col">Creation Date</th>
+                <th scope="col">Update Date</th>
+                <th scope="col">Deletion Date</th>
+                <th scope="col">Admin</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% users.forEach(user => { %>
+                <tr>
+                    <td><%= user.userID %></td>
+                    <td><%= user.username %></td>
+                    <td><%= user.creationDate %></td>
+                    <td><%= user.updateDate %></td>
+                    <td><%= user.deletionDate %></td>
+                    <td><%= user.admin %></td>
+                    <td>
+                        <button type="button" data-edit="<%= JSON.stringify(user) %>" class="btn btn-primary edit"
+                                data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
+                        <button type="button" data-edit="<%= JSON.stringify(user) %>" class="btn btn-danger delete">Delete</button>
+                    </td>
+                </tr>
+            <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Username</label>
+                        <input type="text" class="form-control username-edit" id="recipient-name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Password</label>
+                        <input type="text" class="form-control username-password" id="recipient-name">
+                    </div>
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="edit-admin" id="subscribe" name="subscribe">
+                        <label class="form-check-label" for="subscribe">Admin</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn edit-submit btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Modal -->
+    <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Create User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Username</label>
+                        <input type="text" class="form-control create-username" id="recipient-name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Password</label>
+                        <input type="text" class="form-control create-password" id="recipient-name">
+                    </div>
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="create-admin" id="subscribe" name="subscribe">
+                        <label class="form-check-label" for="subscribe">Admin</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn create-submit btn-primary">Create User</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-success create-btn" data-bs-toggle="modal" data-bs-target="#createModal">New User</button>
+</div>
+</body>
+
+<script>
+    document.querySelector(".charts").addEventListener("click", () => {
+        window.location.href = "/charts/" + JSON.parse(localStorage.getItem("user"))
+    })
+    document.querySelector(".download").addEventListener("click", () => {
+        console.log("click")
+        window.location.href = "/pdfdownload/" + JSON.parse(localStorage.getItem("user"))
+    })
+    document.querySelector(".history").addEventListener("click", () => {
+        window.location.href = "/history/" + JSON.parse(localStorage.getItem("user"))
+    })
+    let a = '<%- JSON.stringify(users) %>';
+
+    let checked = false
+    console.log(a)
+    console.log(JSON.parse(a))
+    for (let i = 0; i < Array.from(document.querySelectorAll(".edit")).length; i++) {
+        Array.from(document.querySelectorAll(".edit"))[i].addEventListener("click", async (event) => {
+            console.log(JSON.parse(event.target.dataset.edit))
+            console.log(event.target.closest("tr"))
+            const input = document.querySelector(".username-edit").value = JSON.parse(event.target.dataset.edit).username
+            const password = document.querySelector(".username-password").value = JSON.parse(event.target.dataset.edit).password
+            document.querySelector(".edit-submit").addEventListener("click", async () => {
+                const options = {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: JSON.parse(event.target.dataset.edit)._id,
+                        password: document.querySelector(".username-password").value,
+                        username: document.querySelector(".username-edit").value,
+                        admin: document.querySelector(".edit-admin").checked
+                    }) // Convert JavaScript object to JSON string
+                };
+
+                // Make the fetch request
+                fetch("/admin", options)
+                    .then(response => {
+                        location.reload();
+                    })
+            })
+
+
+            document.querySelector(".edit-admin").addEventListener("change", (event) => {
+                console.log(event.target.checked)
+                checked = event.target.checked
+            })
+        })
+    }
+    for (let i = 0; i < Array.from(document.querySelectorAll(".delete")).length; i++) {
+        Array.from(document.querySelectorAll(".delete"))[i].addEventListener("click", async (event) => {
+            console.log(JSON.parse(event.target.dataset.edit))
+            const options = {
+                method: 'delete',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: JSON.parse(event.target.dataset.edit)._id,
+                }) // Convert JavaScript object to JSON string
+            };
+
+            // Make the fetch request
+            fetch("/admin", options)
+                .then(response => {
+                    location.reload();
+
+                })
+        })
+    }
+    document.querySelector(".create-btn").addEventListener("click", async () => {
+        const input = document.querySelector(".create-username")
+        const password = document.querySelector(".create-password")
+        let checked = false
+        document.querySelector(".create-admin").addEventListener("change", (event) => {
+            checked = event.target.checked
+            console.log(checked)
+        })
+
+
+        document.querySelector(".create-submit").addEventListener("click", async () => {
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    password: document.querySelector(".create-password").value,
+                    username: document.querySelector(".create-username").value,
+                    admin: document.querySelector(".create-admin").checked
+                })
+            };
+            fetch("/create-user", options).then((response) => {
+                location.reload()
+            })
+        })
+    })
+</script>
+</html>
